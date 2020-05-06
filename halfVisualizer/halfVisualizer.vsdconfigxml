@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration xmlns="http://schemas.microsoft.com/vstudio/vsdconfig/2008">
+
+  <NativeComponent
+    ComponentId="{184B8704-E76C-454A-991F-351D9AB15CFC}"
+    ComponentLevel="9991500"
+    ModuleName="halfVisualizer.dll">
+
+    <Class Name="FiletimeVisualizer" ClassId="{9535F50E-1738-4AE2-8507-5207C44B8261}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <!--NOTE: This VisualizerId is also used in the .natvis file.-->
+            <VisualizerId RequiredValue="8E723FD7-611E-40E7-98C0-624D8873F559"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="halfVisualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0A8}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A00B"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="snorm8Visualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0A9}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A00C"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="unorm8Visualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0AA}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A00D"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="unorm8nVisualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0AB}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A00E"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="snorm16Visualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0AC}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A00F"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="unorm16Visualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0AE}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A010"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="snorm24Visualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0AF}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A011"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+    <Class Name="snorm32Visualizer" ClassId="{3AD02DAB-619A-4C3B-A58A-E130034AE0B0}" WorkerProcessSupported="true">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <VisualizerId RequiredValue="DFEC6847-1321-4D4C-B344-5383E290A012"/>
+          </Filter>
+          <Interface Name="IDkmCustomVisualizer"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+  </NativeComponent>
+</Configuration>

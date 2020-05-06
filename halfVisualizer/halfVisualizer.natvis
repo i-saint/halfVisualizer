@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Create custom views of C++ objects in the debugger using the Natvis framework:
+https://docs.microsoft.com/en-us/visualstudio/debugger/create-custom-views-of-native-objects
+-->
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="half">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A00B"/>
+  </Type>
+  <Type Name="snorm8">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A00C"/>
+  </Type>
+  <Type Name="unorm8">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A00D"/>
+  </Type>
+  <Type Name="unorm8n">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A00E"/>
+  </Type>
+  <Type Name="snorm16">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A00F"/>
+  </Type>
+  <Type Name="unorm16">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A010"/>
+  </Type>
+  <Type Name="snorm24">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A011"/>
+  </Type>
+  <Type Name="snorm32">
+    <CustomVisualizer VisualizerId="DFEC6847-1321-4D4C-B344-5383E290A012"/>
+  </Type>
+</AutoVisualizer>
