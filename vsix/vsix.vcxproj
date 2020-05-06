@@ -30,14 +30,15 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>vsix</RootNamespace>
   </PropertyGroup>
-  <Import Project="..\Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
     <ConfigurationType>NONE</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup>
     <LocalDebuggerCommand>$(DevEnvDir)devenv.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>/rootsuffix Exp $(SolutionDir)\TargetApp\TargetApp.sln</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/rootsuffix Exp $(SolutionDir)\Test\Test.sln</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>$(DevEnvDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerAttach>false</LocalDebuggerAttach>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
@@ -46,15 +47,14 @@
   <Target Name="CoreCompile">
   </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)_out\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_tmp\$(Platform)_$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="Build-x64.targets" />
     <None Include="source.extension.vsixmanifest">

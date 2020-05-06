@@ -25,8 +25,9 @@
     <NugetPackagesDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\packages\))</NugetPackagesDirectory>
   </PropertyGroup>
   <Import Project="packages.version.props" />
-  <Import Project="..\Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
+    <PlatformToolset>v142</PlatformToolset>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfAtl>Dynamic</UseOfAtl>
   </PropertyGroup>

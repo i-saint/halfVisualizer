@@ -19,5 +19,6 @@ _out/
 _tmp/
 _dist/
 _build_*/
+packages*/
 Externals/
 TestLocal/

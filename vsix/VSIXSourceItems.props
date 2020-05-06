@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
-    <DllBinDir>..\$(Configuration)\</DllBinDir>
+    <DllBin32Dir>..\_out\Win32_$(Configuration)\</DllBin32Dir>
+    <DllBin64Dir>..\_out\x64_$(Configuration)\</DllBin64Dir>
     <DllSrcDir>..\halfVisualizer\</DllSrcDir>
   </PropertyGroup>
   <ItemGroup>
-    <VSIXSourceItem Include="$(DllBinDir)x86\halfVisualizer.vsdconfig" />
-    <VSIXSourceItem Include="$(DllBinDir)x86\halfVisualizer.dll">
+    <VSIXSourceItem Include="$(DllBin32Dir)halfVisualizer.vsdconfig" />
+    <VSIXSourceItem Include="$(DllBin32Dir)halfVisualizer.dll">
       <VSIXSubPath>x86</VSIXSubPath>
     </VSIXSourceItem>
-    <VSIXSourceItem Include="$(DllBinDir)x64\halfVisualizer.dll">
+    <VSIXSourceItem Include="$(DllBin64Dir)halfVisualizer.dll">
       <VSIXSubPath>x64</VSIXSubPath>
     </VSIXSourceItem>
     <VSIXSourceItem Include="$(DllSrcDir)halfVisualizer.natvis" />
