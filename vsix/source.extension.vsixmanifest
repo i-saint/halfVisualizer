@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="8F12C6F5-BE35-4DDD-B452-44811F0A3A4D" Version="1.0" Language="en-US" Publisher="Sample" />
-    <DisplayName>halfVisualizer Debugger Sample</DisplayName>
-    <Description xml:space="preserve">halfVisualizer Debugger Sample</Description>
+    <Identity Id="4B82A6D1-4236-4780-B162-112FAE0B070F" Version="1.0" Language="en-US" Publisher="Sample" />
+    <DisplayName>halfVisualizer</DisplayName>
+    <Description xml:space="preserve">halfVisualizer</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0, 17.0)" />

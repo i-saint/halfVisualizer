@@ -9,7 +9,7 @@ class PackedScalarEvaluator
 public:
     using value_t = T;
     static void to_string(CString& dst, T src);
-    static bool to_value(T& dst, const CString& src);
+    static bool from_string(T& dst, const WCHAR* src);
 };
 using halfEvaluator = PackedScalarEvaluator<half>;
 using snorm8Evaluator = PackedScalarEvaluator<snorm8>;

@@ -1,23 +1,109 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-// _CppCustomVisualizerService.cpp : Implementation of FiletimeVisualizer
-
 #include "stdafx.h"
 #include "halfVisualizer.h"
 
 
+#define hvEnableIf(...) std::enable_if_t<__VA_ARGS__, bool> = true
+
+// packed to hex string
+template<class T, hvEnableIf(sizeof(T) == 1)>
+void to_hexstring(CString& dst, T src)
+{
+    dst.AppendFormat(L"(0x%02x)", (uint8_t&)src);
+}
+
+template<class T, hvEnableIf(sizeof(T) == 2)>
+void to_hexstring(CString& dst, T src)
+{
+    dst.AppendFormat(L"(0x%04x)", (uint16_t&)src);
+}
+
+template<class T, hvEnableIf(sizeof(T) == 4)>
+void to_hexstring(CString& dst, T src)
+{
+    dst.AppendFormat(L"(0x%08x)", (uint32_t&)src);
+}
+
+template<class T, hvEnableIf(sizeof(T) == 3)>
+void to_hexstring(CString& dst, T src_)
+{
+    auto* src = (uint8_t*)&src_;
+
+    uint32_t u32 = 0;
+    u32 |= src[0] << 0;
+    u32 |= src[1] << 8;
+    u32 |= src[2] << 16;
+    dst.AppendFormat(L"(0x%06x)", u32);
+}
+
+// packed to string. "float (hex)" format
+// (e.g. "1.000000 (0x3c00)")
 template<class T>
 void PackedScalarEvaluator<T>::to_string(CString& dst, T src)
 {
-    char buf[128];
-    sprintf(buf, "%f", src.to_float());
-    dst = buf;
+    dst.Format(L"%f ", src.to_float());
+    to_hexstring(dst, src);
+}
+
+
+
+template<class T, hvEnableIf(sizeof(T) == 1)>
+bool from_hexstring(T& dst, const WCHAR* src)
+{
+    uint32_t t;
+    if (swscanf(src, L"0x%x", &t) == 1) {
+        (uint8_t&)dst = (uint8_t)t;
+        return true;
+    }
+    return false;
+}
+
+template<class T, hvEnableIf(sizeof(T) == 2)>
+bool from_hexstring(T& dst, const WCHAR* src)
+{
+    uint32_t t;
+    if (swscanf(src, L"0x%x", &t) == 1) {
+        (uint16_t&)dst = (uint16_t)t;
+        return true;
+    }
+    return false;
+}
+
+template<class T, hvEnableIf(sizeof(T) == 4)>
+bool from_hexstring(T& dst, const WCHAR* src)
+{
+    uint32_t t;
+    if (swscanf(src, L"0x%x", &t) == 1) {
+        (uint32_t&)dst = t;
+        return true;
+    }
+    return false;
+}
+
+template<class T, hvEnableIf(sizeof(T) == 3)>
+bool from_hexstring(T& dst_, const WCHAR* src)
+{
+    uint32_t t;
+    if (swscanf(src, L"0x%x", &t) == 1) {
+        auto* dst = (uint8_t*)&dst_;
+        dst[0] = (t & 0xff) >> 0;
+        dst[1] = (t & 0xff00) >> 8;
+        dst[2] = (t & 0xff0000) >> 16;
+        return true;
+    }
+    return false;
 }
 
 template<class T>
-bool PackedScalarEvaluator<T>::to_value(T& dst, const CString& src)
+bool PackedScalarEvaluator<T>::from_string(T& dst, const WCHAR* src)
 {
+    if (from_hexstring(dst, src))
+        return true;
+
+    float t;
+    if (swscanf(src, L"%f", &t) == 1) {
+        dst = t;
+        return true;
+    }
     return false;
 }
 
@@ -44,7 +130,6 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::EvaluateVisualizedExpress
         return E_NOTIMPL;
     }
 
-    // Format this FILETIME as a string
     CString strValue;
     E::to_string(strValue, data);
 
@@ -86,18 +171,13 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::EvaluateVisualizedExpress
         return hr;
     }
 
-    DkmEvaluationResultFlags_t resultFlags = DkmEvaluationResultFlags::Expandable;
-    if (strEditableValue.IsEmpty()) {
-        resultFlags |= DkmEvaluationResultFlags::ReadOnly;
-    }
-
     CComPtr<DkmSuccessEvaluationResult> pSuccessEvaluationResult;
     hr = DkmSuccessEvaluationResult::Create(
         pVisualizedExpression->InspectionContext(),
         pVisualizedExpression->StackFrame(),
         pRootVisualizedExpression->Name(),
         pRootVisualizedExpression->FullName(),
-        resultFlags,
+        DkmEvaluationResultFlags::None,
         pValue,
         pEditableValue,
         pRootVisualizedExpression->Type(),
@@ -106,13 +186,12 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::EvaluateVisualizedExpress
         DkmEvaluationResultStorageType::None,
         DkmEvaluationResultTypeModifierFlags::None,
         pAddress,
-        nullptr,
+        (DkmReadOnlyCollection<DkmCustomUIVisualizerInfo*>*)nullptr,
         (DkmReadOnlyCollection<DkmModuleInstance*>*)nullptr,
         DkmDataItem::Null(),
         &pSuccessEvaluationResult
     );
-    if (FAILED(hr))
-    {
+    if (FAILED(hr)) {
         return hr;
     }
 
@@ -123,68 +202,7 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::EvaluateVisualizedExpress
 template<class C, class E>
 HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::UseDefaultEvaluationBehavior(Evaluation::DkmVisualizedExpression* pVisualizedExpression, bool* pUseDefaultEvaluationBehavior, Evaluation::DkmEvaluationResult** ppDefaultEvaluationResult)
 {
-    HRESULT hr;
-
-    DkmRootVisualizedExpression* pRootVisualizedExpression = DkmRootVisualizedExpression::TryCast(pVisualizedExpression);
-    if (pRootVisualizedExpression == nullptr) {
-        return E_NOTIMPL;
-    }
-
-    DkmInspectionContext* pParentInspectionContext = pVisualizedExpression->InspectionContext();
-
-    CAutoDkmClosePtr<DkmLanguageExpression> pLanguageExpression;
-    hr = DkmLanguageExpression::Create(
-        pParentInspectionContext->Language(),
-        DkmEvaluationFlags::TreatAsExpression,
-        pRootVisualizedExpression->FullName(),
-        DkmDataItem::Null(),
-        &pLanguageExpression
-    );
-    if (FAILED(hr)) {
-        return hr;
-    }
-
-    // show raw value
-    CComPtr<DkmInspectionContext> pInspectionContext;
-    if (DkmComponentManager::IsApiVersionSupported(DkmApiVersion::VS16RTMPreview)) {
-        // If we are running in VS 16 or newer, use this overload...
-        hr = DkmInspectionContext::Create(
-            pParentInspectionContext->InspectionSession(),
-            pParentInspectionContext->RuntimeInstance(),
-            pParentInspectionContext->Thread(),
-            pParentInspectionContext->Timeout(),
-            DkmEvaluationFlags::TreatAsExpression | DkmEvaluationFlags::ShowValueRaw,
-            pParentInspectionContext->FuncEvalFlags(),
-            pParentInspectionContext->Radix(),
-            pParentInspectionContext->Language(),
-            pParentInspectionContext->ReturnValue(),
-            (Evaluation::DkmCompiledVisualizationData*)nullptr,
-            Evaluation::DkmCompiledVisualizationDataPriority::None,
-            pParentInspectionContext->ReturnValues(),
-            pParentInspectionContext->SymbolsConnection(),
-            &pInspectionContext
-        );
-    }
-    else {
-        hr = E_NOTIMPL;
-    }
-    if (FAILED(hr)) {
-        return hr;
-    }
-
-    CComPtr<DkmEvaluationResult> pEEEvaluationResult;
-    hr = pVisualizedExpression->EvaluateExpressionCallback(
-        pInspectionContext,
-        pLanguageExpression,
-        pVisualizedExpression->StackFrame(),
-        &pEEEvaluationResult
-    );
-    if (FAILED(hr)) {
-        return hr;
-    }
-
-    *ppDefaultEvaluationResult = pEEEvaluationResult.Detach();
-    *pUseDefaultEvaluationBehavior = true;
+    *pUseDefaultEvaluationBehavior = false;
     return S_OK;
 }
 
@@ -205,8 +223,26 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::GetItems(Evaluation::DkmV
 template<class C, class E>
 HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::SetValueAsString(Evaluation::DkmVisualizedExpression* pVisualizedExpression, DkmString* pValue, UINT32 Timeout, DkmString** ppErrorText)
 {
-    // todo: float text to half
-    return E_NOTIMPL;
+    value_t data;
+    if (!pValue || !E::from_string(data, pValue->Value())) {
+        return E_INVALIDARG;
+    }
+
+    HRESULT hr;
+    Evaluation::DkmPointerValueHome* pPointerValueHome = Evaluation::DkmPointerValueHome::TryCast(pVisualizedExpression->ValueHome());
+    if (pPointerValueHome == nullptr) {
+        return E_NOTIMPL;
+    }
+
+    DkmArray<BYTE> tmp;
+    tmp.Members = (BYTE*)&data;
+    tmp.Length = sizeof(data);
+    DkmProcess* pTargetProcess = pVisualizedExpression->RuntimeInstance()->Process();
+    hr = pTargetProcess->WriteMemory(pPointerValueHome->Address(), tmp);
+    if (FAILED(hr)) {
+        return E_NOTIMPL;
+    }
+    return S_OK;
 }
 
 template<class C, class E>

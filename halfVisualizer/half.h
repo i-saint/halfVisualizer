@@ -1,23 +1,28 @@
 #pragma once
 #include <cstdint>
+#include <cmath>
 #include <algorithm>
+
+namespace impl {
+    template<class T> inline T clamp(T v, T vmin, T vmax) { return std::min<T>(std::max<T>(v, vmin), vmax); }
+    template<class T> inline T clamp01(T v) { return clamp(v, T(0), T(1)); }
+    template<class T> inline T clamp11(T v) { return clamp(v, T(-1), T(1)); }
+    template<class T> inline T sign(T v) { return v < T(0) ? T(-1) : T(1); }
+}
 
 
 // note: this half doesn't care about Inf nor NaN. simply round down minor bits of exponent and mantissa.
 struct half
 {
-    uint16_t value;
+    uint16_t value = 0;
 
     half() {}
-    half(const half& v) : value(v.value) {}
-
     half(float v)
     {
         uint32_t n = (uint32_t&)v;
         uint16_t sign_bit = (n >> 16) & 0x8000;
         uint16_t exponent = (std::max<int>((n >> 23) - 127 + 15, 0) & 0x1f) << 10;
         uint16_t mantissa = (n >> (23 - 10)) & 0x3ff;
-
         value = sign_bit | exponent | mantissa;
     }
 
@@ -42,21 +47,16 @@ struct half
 };
 
 
-template<class T> T clamp(T v, T vmin, T vmax) { return std::min<T>(std::max<T>(v, vmin), vmax); }
-template<class T> T clamp01(T v) { return clamp(v, T(0), T(1)); }
-template<class T> T clamp11(T v) { return clamp(v, T(-1), T(1)); }
-
 // -1.0f - 1.0f <-> -127 - 127
 struct snorm8
 {
     static constexpr float C = float(0x7f);
     static constexpr float R = 1.0f / float(0x7f);
 
-    int8_t value;
+    int8_t value = 0;
 
     snorm8() {}
-    snorm8(const snorm8& v) : value(v.value) {}
-    snorm8(float v) : value(int8_t(clamp11(v)* C)) {}
+    snorm8(float v) : value(int8_t(impl::clamp11(v)* C)) {}
 
     snorm8& operator=(float v)
     {
@@ -77,11 +77,10 @@ struct unorm8
     static constexpr float C = float(0xff);
     static constexpr float R = 1.0f / float(0xff);
 
-    uint8_t value;
+    uint8_t value = 0;
 
     unorm8() {}
-    unorm8(const unorm8& v) : value(v.value) {}
-    unorm8(float v) : value(uint8_t(clamp01(v)* C)) {}
+    unorm8(float v) : value(uint8_t(impl::clamp01(v)* C)) {}
 
     unorm8& operator=(float v)
     {
@@ -103,11 +102,10 @@ struct unorm8n
     static constexpr float C = float(0xff);
     static constexpr float R = 1.0f / float(0xff);
 
-    uint8_t value;
+    uint8_t value = 0;
 
     unorm8n() {}
-    unorm8n(const unorm8n& v) : value(v.value) {}
-    unorm8n(float v) : value(uint8_t((clamp11(v) * 0.5f + 0.5f)* C)) {}
+    unorm8n(float v) : value(uint8_t((impl::clamp11(v) * 0.5f + 0.5f)* C)) {}
 
     unorm8n& operator=(float v)
     {
@@ -128,11 +126,10 @@ struct snorm16
     static constexpr float C = float(0x7fff);
     static constexpr float R = 1.0f / float(0x7fff);
 
-    int16_t value;
+    int16_t value = 0;
 
     snorm16() {}
-    snorm16(const snorm16& v) : value(v.value) {}
-    snorm16(float v) : value(int16_t(clamp11(v)* C)) {}
+    snorm16(float v) : value(int16_t(impl::clamp11(v)* C)) {}
 
     snorm16& operator=(float v)
     {
@@ -153,11 +150,10 @@ struct unorm16
     static constexpr float C = float(0xffff);
     static constexpr float R = 1.0f / float(0xffff);
 
-    uint16_t value;
+    uint16_t value = 0;
 
     unorm16() {}
-    unorm16(const unorm16& v) : value(v.value) {}
-    unorm16(float v) : value(uint16_t(clamp01(v)* C)) {}
+    unorm16(float v) : value(uint16_t(impl::clamp01(v)* C)) {}
 
     unorm16& operator=(float v)
     {
@@ -179,18 +175,13 @@ struct snorm24
     static constexpr double C = double(0x7fffffff);
     static constexpr double R = 1.0 / double(0x7fffffff);
 
-    uint8_t value[3];
+    uint8_t value[3]{};
 
     snorm24() {}
-    snorm24(const snorm24& v)
-    {
-        for (int i = 0; i < 3; ++i)
-            value[i] = v.value[i];
-    }
     snorm24(float v)
     {
         // store upper 24 bits
-        int i32 = int((double)clamp11(v) * C);
+        int i32 = int((double)impl::clamp11(v) * C);
         value[0] = uint8_t((i32 & 0x0000ff00) >> 8);
         value[1] = uint8_t((i32 & 0x00ff0000) >> 16);
         value[2] = uint8_t((i32 & 0xff000000) >> 24);
@@ -220,11 +211,10 @@ struct snorm32
     static constexpr double C = double(0x7fffffff);
     static constexpr double R = 1.0 / double(0x7fffffff);
 
-    int value;
+    int value = 0;
 
     snorm32() {}
-    snorm32(const snorm32& v) : value(v.value) {}
-    snorm32(float v) : value(int((double)clamp11(v)* C)) {}
+    snorm32(float v) : value(int((double)impl::clamp11(v)* C)) {}
 
     snorm32& operator=(float v)
     {

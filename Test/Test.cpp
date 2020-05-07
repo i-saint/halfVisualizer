@@ -1,9 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-// TargetApp.cpp : Example application which will be debuggeed
-
 #include <iostream>
+#include <vector>
 #include <windows.h>
 #include "../halfVisualizer/half.h"
 
@@ -20,6 +16,10 @@ int wmain(int argc, WCHAR* argv[])
     snorm24 s24 = 0.1f;
     snorm32 s32 = 0.1f;
 
+    std::vector<half> hv;
+    hv.resize(8, 0.5f);
+
+    half ha[4]{};
 
     __debugbreak(); // Evaluate values in the locals or watch window.
     return 0;
