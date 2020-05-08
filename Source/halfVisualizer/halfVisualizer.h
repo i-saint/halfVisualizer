@@ -1,6 +1,6 @@
 #pragma once
 #include "halfVisualizer.Contract.h"
-#include "half.h"
+#include "..\half.h"
 
 
 template<class T>

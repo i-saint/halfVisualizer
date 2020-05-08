@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <windows.h>
-#include "../halfVisualizer/half.h"
+#include "../half.h"
 
 int main(int, char*[])
 {

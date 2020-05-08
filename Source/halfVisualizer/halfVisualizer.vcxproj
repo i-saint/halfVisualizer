@@ -119,10 +119,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="halfVisualizer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="halfVisualizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="halfVisualizer.def" />
@@ -135,9 +135,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="half.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\half.h" />
+    <ClInclude Include="$(IntDir)halfVisualizer.Contract.h" />
     <ClInclude Include="halfVisualizer.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <VsdConfigXmlFiles Include="halfVisualizer.vsdconfigxml" />
