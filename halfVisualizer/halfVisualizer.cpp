@@ -35,7 +35,7 @@ void to_hexstring(CString& dst, T src_)
     dst.AppendFormat(L"(0x%06x)", u32);
 }
 
-// packed to string. "float (hex)" format
+// packed to string in "float (hex)" format
 // (e.g. "1.000000 (0x3c00)")
 template<class T>
 void PackedScalarEvaluator<T>::to_string(CString& dst, T src)
@@ -202,6 +202,7 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::EvaluateVisualizedExpress
 template<class C, class E>
 HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::UseDefaultEvaluationBehavior(Evaluation::DkmVisualizedExpression* pVisualizedExpression, bool* pUseDefaultEvaluationBehavior, Evaluation::DkmEvaluationResult** ppDefaultEvaluationResult)
 {
+    // not use default behavior because it disables SetValueAsString()
     *pUseDefaultEvaluationBehavior = false;
     return S_OK;
 }
@@ -209,14 +210,12 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::UseDefaultEvaluationBehav
 template<class C, class E>
 HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::GetChildren(Evaluation::DkmVisualizedExpression* pVisualizedExpression, UINT32 InitialRequestSize, Evaluation::DkmInspectionContext* pInspectionContext, DkmArray<Evaluation::DkmChildVisualizedExpression*>* pInitialChildren, Evaluation::DkmEvaluationResultEnumContext** ppEnumContext)
 {
-    // not needed
     return E_NOTIMPL;
 }
 
 template<class C, class E>
 HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::GetItems(Evaluation::DkmVisualizedExpression* pVisualizedExpression, Evaluation::DkmEvaluationResultEnumContext* pEnumContext, UINT32 StartIndex, UINT32 Count, DkmArray<Evaluation::DkmChildVisualizedExpression*>* pItems)
 {
-    // not needed
     return E_NOTIMPL;
 }
 
@@ -248,7 +247,6 @@ HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::SetValueAsString(Evaluati
 template<class C, class E>
 HRESULT STDMETHODCALLTYPE VisualizerBoilerplate<C, E>::GetUnderlyingString(Evaluation::DkmVisualizedExpression* pVisualizedExpression, DkmString** ppStringValue)
 {
-    // not needed
     return E_NOTIMPL;
 }
 
